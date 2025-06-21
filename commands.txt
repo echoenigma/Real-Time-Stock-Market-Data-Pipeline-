@@ -1,0 +1,38 @@
+1-Run this in your terminal (inside your project root):
+
+  docker compose up -d --build
+
+
+
+2 ✅ Step 1: Access MySQL container
+     this command in your terminal:
+
+
+     docker exec -it real-time-stock-project-mysql-1 mysql -uroot -proot
+
+
+3  Step 2: Use the database
+   Once inside the MySQL shell, switch to your DB:
+
+   USE trading_data;
+
+4 SHOW TABLES;
+
+
+5 SELECT * FROM ohlc_data ORDER BY id DESC LIMIT 5;
+
+6 SELECT COUNT(*) AS bullish_candles
+FROM ohlc
+WHERE time >= NOW() - INTERVAL 30 MINUTE    //for bullish candles in last 30 minutes
+  AND close > open;
+
+7   Trend Detection (Short-Term) 
+    SELECT 
+    time,
+    close,
+    LAG(close, 5) OVER (ORDER BY time) AS close_5min_ago,
+    (close - LAG(close, 5) OVER (ORDER BY time)) AS delta
+FROM ohlc
+ORDER BY time DESC
+LIMIT 1;
+
